@@ -20,13 +20,16 @@
             <param name="hostname">172.16.0.4</param>
             <param name="port">3389</param>
 
-            <!-- ZMĚŇTE: Přihlašovací údaje do Ubuntu -->
+            <!-- Přihlašovací údaje do Ubuntu -->
             <param name="username">aida</param>
             <param name="password">Poklop123...</param>
 
             <!-- RDP security settings -->
             <param name="security">any</param>
             <param name="ignore-cert">true</param>
+
+            <!-- Czech keyboard layout -->
+            <param name="server-layout">cs-cz-qwertz</param>
 
             <!-- Desktop environment -->
             <param name="color-depth">24</param>
