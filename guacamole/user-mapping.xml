@@ -1,0 +1,58 @@
+<user-mapping>
+
+    <!--
+        POZNÁMKA: Toto je zjednodušená konfigurace pro demo účely.
+        Pro produkční nasazení doporučujeme:
+        1. Použít databázový backend (MySQL/PostgreSQL)
+        2. Neukládat hesla v plain textu
+        3. Implementovat LDAP/AD integraci
+
+        Dokumentace: https://guacamole.apache.org/doc/gug/configuring-guacamole.html
+    -->
+
+    <!-- Authorize uživatel "linux" pro přístup k Ubuntu VM -->
+    <authorize username="linux" password="ZMENIT_HESLO_PRO_GUACAMOLE">
+
+        <!-- RDP připojení na Ubuntu VM -->
+        <connection name="Ubuntu-Desktop-RDP">
+            <protocol>rdp</protocol>
+            <!-- ZMĚŇTE: IP adresa nebo hostname vaší Ubuntu VM -->
+            <param name="hostname">IP_ADRESA_UBUNTU_VM</param>
+            <param name="port">3389</param>
+
+            <!-- ZMĚŇTE: Přihlašovací údaje do Ubuntu -->
+            <param name="username">UBUNTU_USERNAME</param>
+            <param name="password">UBUNTU_PASSWORD</param>
+
+            <!-- RDP security settings -->
+            <param name="security">any</param>
+            <param name="ignore-cert">true</param>
+
+            <!-- Desktop environment -->
+            <param name="color-depth">24</param>
+            <param name="resize-method">display-update</param>
+
+            <!-- Enable audio -->
+            <param name="enable-audio">true</param>
+            <param name="audio-servername">127.0.0.1</param>
+
+            <!-- Enable file transfer (clipboard) -->
+            <param name="enable-drive">true</param>
+            <param name="drive-path">/tmp/guacamole-drive</param>
+            <param name="create-drive-path">true</param>
+        </connection>
+
+        <!-- Volitelně: SSH připojení na Ubuntu VM -->
+        <connection name="Ubuntu-SSH">
+            <protocol>ssh</protocol>
+            <param name="hostname">IP_ADRESA_UBUNTU_VM</param>
+            <param name="port">22</param>
+            <param name="username">UBUNTU_USERNAME</param>
+            <param name="password">UBUNTU_PASSWORD</param>
+            <param name="color-scheme">gray-black</param>
+            <param name="font-size">14</param>
+        </connection>
+
+    </authorize>
+
+</user-mapping>

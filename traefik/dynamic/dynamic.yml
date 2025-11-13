@@ -1,0 +1,15 @@
+http:
+  routers:
+
+    aida_show:
+      rule: Host(`aida-show.aida.cloudfield.dev`)
+      entryPoints: [websecure]
+      tls:
+        certResolver: myresolver
+      service: oauth2-aida-show
+
+  services:
+    oauth2-aida-show:
+      loadBalancer:
+        servers:
+          - url: "http://oauth2-aida-show:4180"

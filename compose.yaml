@@ -1,0 +1,89 @@
+services:
+  traefik:
+    image: "traefik:v2.11"
+    container_name: "traefik"
+    command:
+      # - "--log.level=DEBUG"
+      - "--api.insecure=true"  # po ověření ideálně vypnout/zabezpečit
+      - "--entrypoints.websecure.address=:443"
+
+      # ACME (TLS-ALPN challenge na 443)
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=valda@cloudfield.cz"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+
+      # FILE provider (místo Docker provideru)
+      - "--providers.file.directory=/etc/traefik/dynamic"
+      - "--providers.file.watch=true"
+    ports:
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - "./letsencrypt:/letsencrypt"
+      - "./traefik/dynamic:/etc/traefik/dynamic:ro"
+    restart: always
+    networks:
+      - aida-network
+
+  # Guacamole daemon - backend pro RDP/VNC/SSH
+  guacd:
+    image: guacamole/guacd
+    container_name: guacd
+    restart: always
+    networks:
+      - aida-network
+
+  # Guacamole web aplikace - HTML5 remote desktop
+  guacamole:
+    image: guacamole/guacamole
+    container_name: guacamole
+    depends_on:
+      - guacd
+    environment:
+      GUACD_HOSTNAME: guacd
+      GUACD_PORT: 4822
+      GUACAMOLE_HOME: /etc/guacamole
+    volumes:
+      - ./guacamole/user-mapping.xml:/etc/guacamole/user-mapping.xml:ro
+    expose:
+      - "8080"
+    restart: always
+    networks:
+      - aida-network
+
+  # OAuth2 Proxy pro autentizaci přes Azure AD
+  oauth2-aida-show:
+    image: quay.io/oauth2-proxy/oauth2-proxy
+    container_name: oauth2-aida-show
+    expose:
+      - "4180"
+    environment:
+      OAUTH2_PROXY_PROVIDER: "azure"
+      OAUTH2_PROXY_CLIENT_ID: "c5bb91d7-8bc7-4c7c-8167-5b4b9762399f"
+      OAUTH2_PROXY_CLIENT_SECRET: "${OAUTH2_PROXY_CLIENT_SECRET}"
+      OAUTH2_PROXY_COOKIE_SECRET: "${OAUTH2_PROXY_COOKIE_SECRET}"
+      OAUTH2_PROXY_EMAIL_DOMAINS: "*"
+      OAUTH2_PROXY_AZURE_TENANT: "269a1b55-b8e0-4721-9d49-ae9f28544118"
+      OAUTH2_PROXY_UPSTREAMS: "http://guacamole:8080/"
+      OAUTH2_PROXY_REDIRECT_URL: "https://aida-show.aida.cloudfield.dev/oauth2/callback"
+      OAUTH2_PROXY_HTTP_ADDRESS: "0.0.0.0:4180"
+      OAUTH2_PROXY_OIDC_ISSUER_URL: "https://login.microsoftonline.com/269a1b55-b8e0-4721-9d49-ae9f28544118/v2.0"
+      OAUTH2_PROXY_UPSTREAM_TIMEOUT: "300s"
+      OAUTH2_PROXY_SKIP_PROVIDER_BUTTON: "true"
+      OAUTH2_PROXY_COOKIE_SECURE: "true"
+      OAUTH2_PROXY_COOKIE_DOMAIN: "aida-show.aida.cloudfield.dev"
+      OAUTH2_PROXY_WHITELIST_DOMAIN: "aida-show.aida.cloudfield.dev"
+    depends_on:
+      - traefik
+      - guacamole
+    restart: always
+    networks:
+      - aida-network
+
+networks:
+  aida-network:
+    driver: bridge
+
+volumes:
+  cache:
+    driver: local

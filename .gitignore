@@ -1,0 +1,36 @@
+# Environment variables (obsahuje citlivé údaje)
+.env
+
+# Let's Encrypt certifikáty a konfigurace
+letsencrypt/
+*.pem
+*.key
+*.crt
+
+# Docker volumes
+volumes/
+
+# Guacamole konfigurace s hesly
+# POZNÁMKA: Šablona je v gitu, ale po úpravě (přidání reálných hesel)
+# soubor necommitujte - odkomentujte řádek níže
+# guacamole/user-mapping.xml
+
+# Logs
+*.log
+logs/
+
+# Backup soubory
+*.bak
+*.backup
+*~
+
+# OS soubory
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# IDE
+.vscode/
+.idea/
+*.iml
