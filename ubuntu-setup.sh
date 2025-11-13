@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Setup skript pro Ubuntu VM - česká klávesnice + XFCE + XRDP
+# Setup skript pro Ubuntu VM - česká klávesnice + XFCE + XRDP + Firefox
 # Spusťte na Ubuntu VM jako root nebo s sudo
 #
 
@@ -10,38 +10,40 @@ echo "=== AIDA Ubuntu VM Setup ==="
 echo ""
 
 # Aktualizace systému
-echo "1/6 Aktualizace systému..."
+echo "1/7 Aktualizace systému..."
 apt update
 apt upgrade -y
 
 # Instalace českého locale
-echo "2/6 Instalace českého jazyka..."
+echo "2/7 Instalace českého jazyka..."
 apt install -y language-pack-cs language-pack-cs-base
 
-# Instalace XFCE desktop
-echo "3/6 Instalace XFCE desktop..."
-apt install -y xfce4 xfce4-goodies
+# Instalace XFCE desktop + Firefox
+echo "3/7 Instalace XFCE desktop a Firefox..."
+apt install -y xfce4 xfce4-goodies firefox
 
 # Instalace XRDP
-echo "4/6 Instalace XRDP serveru..."
+echo "4/7 Instalace XRDP serveru..."
 apt install -y xrdp
 systemctl enable xrdp
 systemctl start xrdp
 
 # Nastavení českého layoutu systémově
-echo "5/6 Nastavení české klávesnice..."
+echo "5/7 Nastavení české klávesnice..."
 localectl set-x11-keymap cz pc105 '' qwertz
 
-# Vytvoření uživatele aida (pokud neexistuje)
-echo "6/6 Kontrola uživatele aida..."
+# Kontrola a konfigurace uživatele aida
+echo "6/7 Kontrola uživatele aida..."
 if ! id "aida" &>/dev/null; then
     echo "Vytvářím uživatele aida..."
     adduser --gecos "AIDA User" --disabled-password aida
     echo "aida:Poklop123..." | chpasswd
-    usermod -aG sudo aida
-    echo "Uživatel aida vytvořen."
+    usermod -aG ssl-cert aida
+    echo "Uživatel aida vytvořen s heslem."
 else
-    echo "Uživatel aida již existuje."
+    echo "Uživatel aida již existuje - ponechávám stávající heslo."
+    # Přidání do ssl-cert skupiny (pokud tam ještě není)
+    usermod -aG ssl-cert aida 2>/dev/null || true
 fi
 
 # Vytvoření .xsession pro uživatele aida s českým layoutem
@@ -57,6 +59,12 @@ EOF
 chmod +x /home/aida/.xsession
 chown aida:aida /home/aida/.xsession
 
+# Nastavení Firefoxu jako výchozího prohlížeče
+echo "7/7 Nastavení Firefoxu jako výchozího prohlížeče..."
+if [ -d /home/aida ]; then
+    sudo -u aida xdg-settings set default-web-browser firefox.desktop 2>/dev/null || true
+fi
+
 # Povolení RDP portu ve firewallu (pokud je UFW aktivní)
 if command -v ufw &> /dev/null; then
     echo "Povolit RDP port ve firewallu..."
@@ -68,6 +76,7 @@ echo "=== Setup dokončen! ==="
 echo ""
 echo "Informace:"
 echo "  - XFCE desktop nainstalován"
+echo "  - Firefox nainstalován jako výchozí prohlížeč"
 echo "  - XRDP běží na portu 3389"
 echo "  - Uživatel: aida"
 echo "  - Heslo: Poklop123..."
