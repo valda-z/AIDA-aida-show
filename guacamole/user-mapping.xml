@@ -21,7 +21,7 @@
             <param name="port">3389</param>
 
             <!-- ZMĚŇTE: Přihlašovací údaje do Ubuntu -->
-            <param name="username">remoteuser</param>
+            <param name="username">aida</param>
             <param name="password">Poklop123...</param>
 
             <!-- RDP security settings -->
@@ -47,7 +47,7 @@
             <protocol>ssh</protocol>
             <param name="hostname">172.16.0.4</param>
             <param name="port">22</param>
-            <param name="username">remoteuser</param>
+            <param name="username">aida</param>
             <param name="password">Poklop123...</param>
             <param name="color-scheme">gray-black</param>
             <param name="font-size">14</param>
