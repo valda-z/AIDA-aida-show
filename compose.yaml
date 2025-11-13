@@ -45,6 +45,7 @@ services:
       GUACAMOLE_HOME: /etc/guacamole
     volumes:
       - ./guacamole/user-mapping.xml:/etc/guacamole/user-mapping.xml:ro
+      - ./guacamole/tomcat-conf/server.xml:/usr/local/tomcat/conf/server.xml:ro
     expose:
       - "8080"
     restart: always
