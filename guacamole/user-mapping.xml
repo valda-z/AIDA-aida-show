@@ -10,19 +10,19 @@
         Dokumentace: https://guacamole.apache.org/doc/gug/configuring-guacamole.html
     -->
 
-    <!-- Authorize uživatel "linux" pro přístup k Ubuntu VM -->
-    <authorize username="linux" password="ZMENIT_HESLO_PRO_GUACAMOLE">
+    <!-- Authorize uživatel "aida" pro přístup k Ubuntu VM -->
+    <authorize username="aida" password="Poklop123...">
 
         <!-- RDP připojení na Ubuntu VM -->
         <connection name="Ubuntu-Desktop-RDP">
             <protocol>rdp</protocol>
-            <!-- ZMĚŇTE: IP adresa nebo hostname vaší Ubuntu VM -->
-            <param name="hostname">IP_ADRESA_UBUNTU_VM</param>
+            <!-- IP adresa Ubuntu VM -->
+            <param name="hostname">172.16.0.4</param>
             <param name="port">3389</param>
 
             <!-- ZMĚŇTE: Přihlašovací údaje do Ubuntu -->
-            <param name="username">UBUNTU_USERNAME</param>
-            <param name="password">UBUNTU_PASSWORD</param>
+            <param name="username">remoteuser</param>
+            <param name="password">Poklop123...</param>
 
             <!-- RDP security settings -->
             <param name="security">any</param>
@@ -45,10 +45,10 @@
         <!-- Volitelně: SSH připojení na Ubuntu VM -->
         <connection name="Ubuntu-SSH">
             <protocol>ssh</protocol>
-            <param name="hostname">IP_ADRESA_UBUNTU_VM</param>
+            <param name="hostname">172.16.0.4</param>
             <param name="port">22</param>
-            <param name="username">UBUNTU_USERNAME</param>
-            <param name="password">UBUNTU_PASSWORD</param>
+            <param name="username">remoteuser</param>
+            <param name="password">Poklop123...</param>
             <param name="color-scheme">gray-black</param>
             <param name="font-size">14</param>
         </connection>
